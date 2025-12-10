@@ -1,3 +1,18 @@
-venv/
+# Python
 __pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
 .DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Database
+app.db
+uploads/
+
+# User specific
+settings.json

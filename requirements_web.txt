@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-multipart
+jinja2
+openai
+selenium
+webdriver-manager
+PyPDF2
+python-docx
+beautifulsoup4
+sqlalchemy
+passlib[bcrypt]
+python-jose

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super-Form | AI Form Filler</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body> <!-- Light Elegant Minimalist Theme -->
+
+    <!-- AUTH -->
+    <div id="view-auth" style="display: none;">
+        <div class="auth-container">
+            <div class="logo">
+                <h2>🚀 Super-Form</h2>
+            </div>
+
+            <div id="form-login" class="auth-card">
+                <h3>Sign in to Super-Form</h3>
+                <input type="text" id="loginEmail" placeholder="name@company.com">
+                <input type="password" id="loginPass" placeholder="Password">
+                <button class="btn btn-primary" onclick="doLogin()" style="width: 100%; margin-top: 16px;">Sign
+                    In</button>
+                <span class="auth-link" onclick="showAuth('signup')">Create an account</span>
+            </div>
+
+            <div id="form-signup" class="auth-card" style="display: none;">
+                <h3>Create Super-Form Account</h3>
+                <input type="text" id="signupEmail" placeholder="name@company.com">
+                <input type="password" id="signupPass" placeholder="Password (8+ chars)">
+                <button class="btn btn-primary" onclick="doSignup()" style="width: 100%; margin-top: 16px;">Sign
+                    Up</button>
+                <span class="auth-link" onclick="showAuth('login')">Already have an account?</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- APP -->
+    <div id="view-app" class="app-container" style="display: none;">
+
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>🚀 Super-Form</h2>
+            </div>
+
+            <div class="status-card" id="connectionStatus">
+                <div class="indicator disconnected"></div>
+                <span>No Browser</span>
+            </div>
+
+            <nav>
+                <div class="nav-item active" onclick="showSection('dashboard')" id="nav-dashboard">Dashboard</div>
+                <div class="nav-item" onclick="showSection('profile')" id="nav-profile">My Profile</div>
+                <div class="nav-item" onclick="showSection('settings')" id="nav-settings">Settings</div>
+            </nav>
+
+            <div class="control-panel">
+                <button class="btn btn-secondary" style="width: 100%;" onclick="openModal('connectModal')">Connect
+                    Browser</button>
+                <div class="nav-item" onclick="doLogout()"
+                    style="margin-top: 12px; color: var(--danger); text-align: center;">Log out</div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+
+            <!-- DASHBOARD -->
+            <div id="section-dashboard">
+                <header>
+                    <h1>Dashboard</h1>
+                    <p>Manage your application process.</p>
+                </header>
+
+                <section class="card">
+                    <h3>📄 Documents</h3>
+                    <div class="drop-zone" id="dropZone">
+                        <p>Drag & Drop Resumes/CVs here</p>
+                        <input type="file" id="fileInput" multiple hidden>
+                        <button class="btn btn-secondary" style="margin-top: 12px;"
+                            onclick="document.getElementById('fileInput').click()">Browse Files</button>
+                    </div>
+                    <div class="file-list" id="fileList"></div>
+                </section>
+
+                <section class="card" style="display: flex; flex-direction: column; height: 500px;">
+                    <h3>💬 AI Copilot</h3>
+                    <div id="chatContainer" class="chat-container">
+                        <div class="chat-message bot">Ready to help! Type "Start" when you're on a job page.</div>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="chatInput" placeholder="Type instructions..."
+                            onkeypress="handleEnter(event)">
+                        <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+                        <button class="btn btn-secondary" onclick="sendStart()">Start</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PROFILE -->
+            <div id="section-profile" style="display: none;">
+                <header>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h1>My Profile</h1>
+                            <p>Detailed information for the AI.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+                    </div>
+                </header>
+
+                <section class="card">
+                    <h3>Personal Info</h3>
+                    <div class="row">
+                        <div class="col">
+                            <label>Full Name</label>
+                            <input type="text" id="profName" placeholder="John Doe">
+                        </div>
+                        <div class="col">
+                            <label>Email</label>
+                            <input type="text" id="profEmail" readonly style="opacity: 0.6; cursor: not-allowed;">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label>Phone</label>
+                            <input type="text" id="profPhone" placeholder="+1 555 000 0000">
+                        </div>
+                        <div class="col">
+                            <label>LinkedIn URL</label>
+                            <input type="text" id="profLinkedin" placeholder="https://linkedin.com/in/...">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label>Personal Website</label>
+                            <input type="text" id="profWebsite" placeholder="https://johndoe.com">
+                        </div>
+                    </div>
+                    <label>Bio / Summary</label>
+                    <textarea id="profBio" placeholder="Brief professional summary..."></textarea>
+                </section>
+
+                <div class="section-title">Work Experience</div>
+                <div id="experienceList"></div>
+                <button class="btn btn-outline" onclick="addExperience()">+ Add Position</button>
+
+                <div class="section-title" style="margin-top: 40px;">Education</div>
+                <div id="educationList"></div>
+                <button class="btn btn-outline" onclick="addEducation()">+ Add Education</button>
+
+                <div class="section-title" style="margin-top: 40px;">Skills</div>
+                <section class="card">
+                    <label>Comma Separated Skills</label>
+                    <textarea id="profSkills"
+                        placeholder="Python, JavaScript, Leadership, Project Management..."></textarea>
+                </section>
+
+                <div style="height: 100px;"></div> <!-- Spacer -->
+            </div>
+
+            <!-- SETTINGS -->
+            <div id="section-settings" style="display: none;">
+                <header>
+                    <h1>Settings</h1>
+                </header>
+                <section class="card">
+                    <h3>Configuration</h3>
+                    <label>OpenAI API Key</label>
+                    <input type="password" id="settingApiKey" placeholder="sk-...">
+                    <div style="margin-top: 16px;">
+                        <button class="btn btn-primary" onclick="saveSettings()">Save Key</button>
+                    </div>
+                </section>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL -->
+    <div id="connectModal" class="modal">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h3>Connect Browser</h3>
+                <span style="cursor: pointer; font-size: 1.5rem;" onclick="closeModal('connectModal')">&times;</span>
+            </div>
+
+            <label>Browser Type</label>
+            <select id="browserType" style="margin-bottom: 20px;">
+                <option value="chrome">Google Chrome</option>
+                <option value="comet">Comet Browser</option>
+            </select>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button class="btn btn-secondary" style="flex: 1;" onclick="switchTab('new')">Launch New</button>
+                <button class="btn btn-secondary" style="flex: 1;" onclick="switchTab('existing')">Attach
+                    Existing</button>
+            </div>
+
+            <div id="tab-new" class="tab-content">
+                <p style="color: var(--text-secondary); margin-bottom: 12px;">Launch a fresh, isolated browser window.
+                </p>
+                <input type="text" id="startUrl" placeholder="Enter Job URL (Optional)">
+                <button class="btn btn-primary" style="width: 100%; margin-top: 16px;"
+                    onclick="connectBrowser('new')">Launch</button>
+            </div>
+
+            <div id="tab-existing" class="tab-content" style="display: none;">
+                <p style="color: var(--text-secondary); margin-bottom: 12px;">Attach to a running browser (requires port
+                    9222).</p>
+                <button class="btn btn-primary" style="width: 100%;" onclick="connectBrowser('existing')">Attach via
+                    Port 9222</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
