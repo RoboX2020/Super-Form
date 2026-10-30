@@ -1,3 +1,7 @@
+# ====================================================================
+# debug_auth.py - a developer script for testing sign-in when it
+# misbehaves.
+# ====================================================================
 from database import init_db, SessionLocal, User
 from auth import get_password_hash
 

@@ -1,3 +1,8 @@
+# ====================================================================
+# shape_detector.py - a shape-recognition demo (webcam detects drawn or
+# held shapes). An experiment parked in this repo, separate from the form
+# filler.
+# ====================================================================
 import cv2
 import numpy as np
 

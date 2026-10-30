@@ -1,3 +1,8 @@
+# ====================================================================
+# gesture_3d_modeler.py - a hand-gesture 3D modeling demo (shape objects
+# in the air on webcam). An experiment parked in this repo, separate from
+# the form filler.
+# ====================================================================
 import cv2
 import numpy as np
 import math

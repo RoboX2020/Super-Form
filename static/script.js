@@ -1,3 +1,8 @@
+// ============================================================================
+// script.js - the Super-Form web page's logic: chat with the AI about a
+// form, watch it fill fields live, and tweak profile settings. Talks to
+// server.py's API.
+// ============================================================================
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
 

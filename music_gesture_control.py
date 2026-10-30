@@ -1,3 +1,8 @@
+# ====================================================================
+# music_gesture_control.py - a hand-gesture music demo (webcam: move your
+# hand to control sound). An experiment parked in this repo, separate from
+# the form filler.
+# ====================================================================
 import cv2
 import numpy as np
 import math

@@ -1,3 +1,8 @@
+# ====================================================================
+# face_mesh_generator.py - a webcam face-mesh demo (draws the MediaPipe
+# face wireframe on your video). An experiment parked in this repo,
+# separate from the form filler.
+# ====================================================================
 import cv2
 import numpy as np
 

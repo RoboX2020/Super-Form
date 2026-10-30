@@ -1,3 +1,7 @@
+# ====================================================================
+# auth.py - accounts and sign-in: passwords are stored as bcrypt hashes
+# (never plain text) and sessions use signed JWT tokens.
+# ====================================================================
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt

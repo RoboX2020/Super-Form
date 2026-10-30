@@ -1,3 +1,7 @@
+# ====================================================================
+# tone adjust.py - a small audio experiment (generates and tweaks tones).
+# Parked in this repo, separate from the form filler.
+# ====================================================================
 import time
 import numpy as np
 import sounddevice as sd

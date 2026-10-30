@@ -1,3 +1,9 @@
+# ====================================================================
+# server.py - the web server of Super-Form, an AI form filler: you
+# sign in, point it at a job application page in your browser, and it fills
+# the form from your saved profile. FastAPI serves the UI (static/) and the
+# API the page talks to (connect/chat/fill/settings endpoints).
+# ====================================================================
 import os
 import json
 import time

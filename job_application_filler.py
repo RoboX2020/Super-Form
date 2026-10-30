@@ -1,3 +1,9 @@
+# ====================================================================
+# job_application_filler.py - the part that actually fills forms: drives a
+# real browser with Selenium, reads the fields on the page, asks the AI
+# what answer belongs in each one (from your saved profile/resume), and
+# types it in.
+# ====================================================================
 import sys
 import threading
 import json
