@@ -16,6 +16,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
+# # Check a login password against the stored (scrambled) hash.
 def verify_password(plain_password, hashed_password):
     # bcrypt.checkpw requires bytes
     if isinstance(plain_password, str):
@@ -25,6 +26,7 @@ def verify_password(plain_password, hashed_password):
     
     return bcrypt.checkpw(plain_password, hashed_password)
 
+# # Scramble a password for storage - plain passwords are never saved.
 def get_password_hash(password):
     if isinstance(password, str):
         password = password.encode('utf-8')
@@ -32,6 +34,7 @@ def get_password_hash(password):
     hashed = bcrypt.hashpw(password, bcrypt.gensalt())
     return hashed.decode('utf-8')
 
+# # Issue a signed login token (JWT) that proves who you are until it expires.
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
@@ -42,6 +45,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+# # Read the token on each request and work out which user it belongs to.
 def get_current_user_id(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

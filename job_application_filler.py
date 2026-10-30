@@ -44,12 +44,16 @@ DEFAULT_API_KEY = os.getenv("OPENAI_API_KEY", "")
 # LOGIC CLASS
 # --------------------------
 
+# # Qt's way for the background worker to safely talk to the window:
+# # threads can't touch the UI directly, so these signals carry messages.
 class WorkerSignals(QObject):
     log = pyqtSignal(str)
     finished_launch = pyqtSignal() # Signal when browser launch is done
     finished_fill = pyqtSignal()   # Signal when fill is done
     error = pyqtSignal(str)
 
+# # The form-filling brain: owns the browser, reads the page, asks the AI,
+# # and types your answers in.
 class JobFillerAI:
     def __init__(self, api_key: str, resume_path: str, signals: WorkerSignals):
         self.api_key = api_key
@@ -63,6 +67,7 @@ class JobFillerAI:
     def log(self, msg):
         self.signals.log.emit(msg)
 
+    # # Read your resume/profile file so the AI can answer as you.
     def load_resume(self):
         self.log(f"Loading resume from {self.resume_path}...")
         try:
@@ -86,6 +91,7 @@ class JobFillerAI:
             self.log(f"Error loading resume: {e}")
             raise e
 
+    # # Open Chrome at the job application page.
     def start_browser(self, url: str):
         self.log("Starting Browser...")
         try:
@@ -101,6 +107,7 @@ class JobFillerAI:
             self.log(f"Error starting browser: {e}")
             raise e
 
+    # # Find every fillable thing on the page (text boxes, dropdowns, radios...).
     def extract_form_elements(self) -> List[WebElement]:
         self.log("Scanning page for form fields...")
         inputs = self.driver.find_elements(By.TAG_NAME, "input")
@@ -119,6 +126,7 @@ class JobFillerAI:
         self.log(f"Found {len(visible_elements)} visible fillable elements.")
         return visible_elements
 
+    # # Collect a field's clues (name, id, placeholder) to guess what it asks.
     def get_element_identifiers(self, element: WebElement) -> dict:
         return {
             "tag": element.tag_name,
@@ -129,6 +137,7 @@ class JobFillerAI:
             "label": self.find_label(element)
         }
 
+    # # Find the visible label text near a field - the strongest clue of all.
     def find_label(self, element: WebElement) -> str:
         try:
             id_attr = element.get_attribute("id")
@@ -143,6 +152,7 @@ class JobFillerAI:
             pass
         return ""
 
+    # # The main loop: describe each field to the AI, get the answer, type it in.
     def analyze_and_fill(self, user_instructions: str):
         if not self.driver:
             self.log("Browser not started.")
@@ -313,6 +323,7 @@ class MainWindow(QMainWindow):
         # State
         self.bot = None
 
+    # # File-picker for choosing your resume.
     def browse_resume(self):
         fname, _ = QFileDialog.getOpenFileName(self, "Select Resume", "", "All Files (*);;PDF Files (*.pdf);;Word Files (*.docx)")
         if fname:
@@ -321,6 +332,7 @@ class MainWindow(QMainWindow):
     def log(self, message):
         self.log_area.append(message)
 
+    # # Run the browser on a background thread so the window doesn't freeze.
     def launch_browser_thread(self):
         api = self.api_key_input.text()
         resume = self.resume_path_input.text()
@@ -351,10 +363,12 @@ class MainWindow(QMainWindow):
         finally:
             self.worker_signals.finished_launch.emit()
 
+    # # Re-enable the buttons once the background work is done.
     def on_launch_finished(self):
         self.btn_fill.setEnabled(True)
         self.log("Browser Launched. Log in or navigate to the form, then click 'Fill Visible Page'.")
 
+    # # Same for the filling step - background thread, responsive window.
     def fill_page_thread(self):
         if not self.bot:
             return
